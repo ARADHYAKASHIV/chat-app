@@ -34,7 +34,11 @@ export const useChatStore = create((set, get) => ({
     }
   },
   sendMessage: async (messageData) => {
+    console.log("Sending message:", messageData); // Debug log
+
     const { selectedUser, messages } = get();
+    console.log("Current messages:", messages); // Debug log
+
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
       set({ messages: [...messages, res.data], isMessagesLoading: false });
@@ -51,6 +55,8 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
+      console.log("New message received:", newMessage); // Debug log
+
       const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isMessageSentFromSelectedUser) return;
 
