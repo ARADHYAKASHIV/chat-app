@@ -9,8 +9,15 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
 
+  const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error("Image size exceeds 2MB limit");
+      return;
+    }
+
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -30,14 +37,18 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+    if (!text.trim() && !imagePreview) {
+        toast.error("Please enter a message or select an image.");
+        return;
+    }
+
 
     try {
       await sendMessage({
-        content: text.trim(),
+        content: text.trim() || "Image sent",
+
         image: imagePreview,
       });
-
 
       // Clear form
       setText("");
@@ -107,4 +118,5 @@ const MessageInput = () => {
     </div>
   );
 };
+
 export default MessageInput;
