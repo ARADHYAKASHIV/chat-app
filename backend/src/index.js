@@ -5,10 +5,12 @@ import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { app, server } from './lib/socket.js';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
-const app = express();
+
 const PORT = process.env.PORT;
 
 app.use(express.json({ limit: '5mb' })); // Increase the limit to 5MB
@@ -22,7 +24,7 @@ app.use(cors({
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log('Server is running on port PORT:' + PORT);
     connectDB();
 });
